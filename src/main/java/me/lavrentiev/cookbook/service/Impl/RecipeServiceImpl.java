@@ -1,13 +1,15 @@
-package me.lavrentiev.cookbook.service;
+package me.lavrentiev.cookbook.service.Impl;
 import me.lavrentiev.cookbook.exeptions.ValidationException;
 import me.lavrentiev.cookbook.model.Recipe;
+import me.lavrentiev.cookbook.service.RecipeService;
+import me.lavrentiev.cookbook.service.ValidationService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 @Service
-public class RecipeServiceImpl implements RecipeService{
+public class RecipeServiceImpl implements RecipeService {
     private static long idCounter = 1;
     private Map<Long, Recipe> recipeMap = new HashMap<>();
     private ValidationService validationService;

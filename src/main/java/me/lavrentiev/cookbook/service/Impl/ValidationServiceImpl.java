@@ -1,7 +1,8 @@
-package me.lavrentiev.cookbook.service;
+package me.lavrentiev.cookbook.service.Impl;
 
 import me.lavrentiev.cookbook.model.Ingredient;
 import me.lavrentiev.cookbook.model.Recipe;
+import me.lavrentiev.cookbook.service.ValidationService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 

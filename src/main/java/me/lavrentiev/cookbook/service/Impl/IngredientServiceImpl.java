@@ -1,7 +1,9 @@
-package me.lavrentiev.cookbook.service;
+package me.lavrentiev.cookbook.service.Impl;
 
 import me.lavrentiev.cookbook.exeptions.ValidationException;
 import me.lavrentiev.cookbook.model.Ingredient;
+import me.lavrentiev.cookbook.service.IngredientService;
+import me.lavrentiev.cookbook.service.ValidationService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
