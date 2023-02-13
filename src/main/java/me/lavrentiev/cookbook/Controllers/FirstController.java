@@ -5,18 +5,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FirstController {
-    @GetMapping
+    @GetMapping("/")
     public String start() {
         return "Start";
     }
 
     @GetMapping("/info")
     public String info() {
-        return """
-                Ученик: Никита
-                Название проекта: Книга рецептов
-                Дата создания: 04.02.2023.
-                Описание проекта: Это будет книга с рецептами
-                """;
+        return "Ученик: Никита </br>" +
+                "Название проекта: Книга рецептов </br>" +
+                "Дата создания: 04.02.2023. </br>" +
+                "Описание проекта: Это будет книга с рецептами";
     }
 }
