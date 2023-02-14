@@ -21,7 +21,7 @@ public class IngredientController {
 
     @PostMapping
     @Operation(
-            summary = "Сохраняет ингредиенты"
+            summary = "Сохраняет ингредиенты, возможна ошибка 400"
     )
     public ResponseEntity<Ingredient> save(@RequestBody Ingredient ingredient) {
         return ResponseEntity.ok(ingredientService.save(ingredient));
@@ -29,7 +29,7 @@ public class IngredientController {
 
     @GetMapping("/{id}")
     @Operation(
-            summary = "Находит ингредиенты по id"
+            summary = "Находит ингредиенты по id, возможна ошибка 404"
     )
     public ResponseEntity<Ingredient> getById(@PathVariable Long id) {
         return ResponseEntity.of(ingredientService.getById(id));
@@ -37,7 +37,7 @@ public class IngredientController {
 
     @PutMapping("/{id}")
     @Operation(
-            summary = "Заменяет ингредиенты по id"
+            summary = "Заменяет ингредиенты по id, возможна ошибка 400"
     )
     public ResponseEntity<Ingredient> update(@PathVariable Long id, @RequestBody Ingredient ingredient) {
         return ResponseEntity.ok(ingredientService.update(id, ingredient));
@@ -45,7 +45,7 @@ public class IngredientController {
 
     @DeleteMapping("/{id}")
     @Operation(
-            summary = "Удаляет ингредиенты"
+            summary = "Удаляет ингредиенты, возможна ошибка 404"
     )
     public ResponseEntity<Ingredient> delete(@PathVariable Long id) {
         return ResponseEntity.ok(ingredientService.delete(id));

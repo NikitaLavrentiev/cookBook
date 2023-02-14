@@ -18,27 +18,31 @@ public class RecipeController {
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
+
     @Operation(
-            summary = "Сохраняет рецепты"
+            summary = "Сохраняет рецепты, возможна ошибка 400"
     )
     @PostMapping
     public ResponseEntity<Recipe> save(@RequestBody Recipe recipe) {
         return ResponseEntity.ok(recipeService.save(recipe));
     }
+
     @Operation(
-            summary = "Находит рецепты по id"
+            summary = "Находит рецепты по id, возможна ошибка 404"
     )
     @GetMapping("/{id}")
     public ResponseEntity<Recipe> getById(@PathVariable Long id) {
         return ResponseEntity.of(recipeService.getById(id));
     }
+
     @Operation(
-            summary = "Заменяет рецепты"
+            summary = "Заменяет рецепты, возможна ошибка 400"
     )
     @PutMapping("/{id}")
     public ResponseEntity<Recipe> update(@PathVariable Long id, @RequestBody Recipe recipe) {
         return ResponseEntity.ok(recipeService.update(id, recipe));
     }
+
     @Operation(
             summary = "Удаляет рецепты"
     )
@@ -46,6 +50,7 @@ public class RecipeController {
     public ResponseEntity<Recipe> delete(@PathVariable Long id) {
         return ResponseEntity.ok(recipeService.delete(id));
     }
+
     @Operation(
             summary = "Показывает все рецепты"
     )
