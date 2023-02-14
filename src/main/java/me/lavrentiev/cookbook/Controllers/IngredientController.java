@@ -3,6 +3,7 @@ package me.lavrentiev.cookbook.Controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import me.lavrentiev.cookbook.model.Ingredient;
+import me.lavrentiev.cookbook.service.FileRecipeService;
 import me.lavrentiev.cookbook.service.IngredientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class IngredientController {
     private final IngredientService ingredientService;
 
-    public IngredientController(IngredientService ingredientService) {
+    public IngredientController(FileRecipeService fileRecipeService, IngredientService ingredientService) {
         this.ingredientService = ingredientService;
     }
 
