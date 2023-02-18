@@ -1,8 +1,7 @@
 package me.lavrentiev.cookbook.Controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import me.lavrentiev.cookbook.service.FileRecipeService;
-import me.lavrentiev.cookbook.service.RecipeService;
+import me.lavrentiev.cookbook.service.FileIngredientService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -15,43 +14,42 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 
 @RestController
-@RequestMapping("/files")
-@Tag(name = "API по работе с ингредиентами", description = "CRUD - операции для ингредиентов")
-public class FilesController {
+@RequestMapping("/files/ingredient")
+@Tag(name = "API по работе с ингредиентами", description = "сохранение.удаление файлов с ингредиентами")
+public class IngredientFilesController {
+    private final FileIngredientService ingredientService;
 
-    private final FileRecipeService recipeService;
-
-    public FilesController(FileRecipeService fileRecipeService) {
-        this.recipeService = fileRecipeService;
+    public IngredientFilesController(FileIngredientService ingredientService) {
+        this.ingredientService = ingredientService;
     }
 
-    @GetMapping(value = "/recipe/export/")
+    @GetMapping(value = "/export/")
     public ResponseEntity<InputStreamResource> downloadDataFile() throws FileNotFoundException {
-       File file = recipeService.getDataFile();
+        File file = ingredientService.getDataFile();
 
         if (file.exists()) {
             InputStreamResource resource = new InputStreamResource(new FileInputStream((file)));
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_JSON)
                     .contentLength(file.length())
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; file name=\"RecipeLog.json\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; file name=\"IngredientLog.json\"")
                     .body(resource);
         } else {
             return ResponseEntity.noContent().build();
         }
     }
 
-    @PostMapping(value = "/recipe/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadDataFile(@RequestParam MultipartFile file) {
-        recipeService.deleteDataFile();
-        File dataFile = recipeService.getDataFile();
+        ingredientService.deleteDataFile();
+        File dataFile = ingredientService.getDataFile();
 
         try (FileOutputStream fos=new FileOutputStream(dataFile)) {
             IOUtils.copy(file.getInputStream(), fos);
             return ResponseEntity.ok().build();
         }  catch (IOException e) {
-        e.printStackTrace();
-    }
+            e.printStackTrace();
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-}
+    }
 }
