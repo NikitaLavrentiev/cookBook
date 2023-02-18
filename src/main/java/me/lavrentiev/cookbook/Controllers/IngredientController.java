@@ -24,8 +24,9 @@ public class IngredientController {
     @Operation(
             summary = "Сохраняет ингредиенты, возможна ошибка 400"
     )
-    public ResponseEntity<Ingredient> save(@RequestBody Ingredient ingredient) {
-        return ResponseEntity.ok(ingredientService.save(ingredient));
+    public ResponseEntity<Long> addIngredient(@RequestBody Ingredient ingredient) {
+        long id = ingredientService.addIngredient(ingredient);
+        return ResponseEntity.ok().body(id);
     }
 
     @GetMapping("/{id}")
@@ -49,7 +50,10 @@ public class IngredientController {
             summary = "Удаляет ингредиенты, возможна ошибка 404"
     )
     public ResponseEntity<Ingredient> delete(@PathVariable Long id) {
-        return ResponseEntity.ok(ingredientService.delete(id));
+        if (ingredientService.delete(id)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping

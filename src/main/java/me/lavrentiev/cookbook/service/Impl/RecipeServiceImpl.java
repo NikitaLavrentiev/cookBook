@@ -3,7 +3,6 @@ package me.lavrentiev.cookbook.service.Impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import me.lavrentiev.cookbook.exeptions.ValidationException;
 import me.lavrentiev.cookbook.model.Recipe;
 import me.lavrentiev.cookbook.service.FileRecipeService;
@@ -11,6 +10,7 @@ import me.lavrentiev.cookbook.service.RecipeService;
 import me.lavrentiev.cookbook.service.ValidationService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,12 +33,13 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe save(Recipe recipe) {
+    public Long addRecipe(Recipe recipe) {
         if (!validationService.validate(recipe)) {
             throw new ValidationException(recipe.toString());
         }
+        recipeMap.put(idCounter++, recipe);
         saveToFile();
-        return recipeMap.put(idCounter++, recipe);
+        return idCounter;
     }
 
     @Override
@@ -51,13 +52,19 @@ public class RecipeServiceImpl implements RecipeService {
         if (!validationService.validate(recipe)) {
             throw new ValidationException(recipe.toString());
         }
+        recipeMap.replace(id, recipe);
         saveToFile();
-        return recipeMap.replace(id, recipe);
+        return recipeMap.get(id);
     }
 
     @Override
-    public Recipe delete(Long id) {
-        return recipeMap.remove(id);
+    public boolean delete(Long id) {
+        if (recipeMap.containsKey(id)) {
+            recipeMap.remove(id);
+            saveToFile();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -77,7 +84,7 @@ public class RecipeServiceImpl implements RecipeService {
     private void readFromFile() {
         try {
             String json = fileRecipeService.readFromFile();
-            new ObjectMapper().readValue(json, new TypeReference<HashMap<Long, Recipe>>() {
+           recipeMap =  new ObjectMapper().readValue(json, new TypeReference<HashMap<Long, Recipe>>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

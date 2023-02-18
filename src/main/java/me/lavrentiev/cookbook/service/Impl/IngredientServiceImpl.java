@@ -3,7 +3,6 @@ package me.lavrentiev.cookbook.service.Impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import me.lavrentiev.cookbook.exeptions.ValidationException;
 import me.lavrentiev.cookbook.model.Ingredient;
 import me.lavrentiev.cookbook.service.FileIngredientService;
@@ -11,6 +10,7 @@ import me.lavrentiev.cookbook.service.IngredientService;
 import me.lavrentiev.cookbook.service.ValidationService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -26,17 +26,20 @@ public class IngredientServiceImpl implements IngredientService {
         this.fileIngredientService = fileIngredientService;
         this.validationService = validationService;
     }
+
     @PostConstruct
     private void init() {
         readFromFile();
     }
+
     @Override
-    public Ingredient save(Ingredient ingredient) {
+    public Long addIngredient(Ingredient ingredient) {
         if (!validationService.validate(ingredient)) {
             throw new ValidationException(ingredient.toString());
         }
+        ingredientMap.put(idCounter++, ingredient);
         saveToFile();
-        return ingredientMap.put(idCounter++, ingredient);
+        return idCounter;
     }
 
     @Override
@@ -49,19 +52,26 @@ public class IngredientServiceImpl implements IngredientService {
         if (!validationService.validate(ingredient)) {
             throw new ValidationException(ingredient.toString());
         }
+        ingredientMap.replace(id, ingredient);
         saveToFile();
-        return ingredientMap.replace(id, ingredient);
+        return ingredientMap.get(id);
     }
 
     @Override
-    public Ingredient delete(Long id) {
-        return ingredientMap.remove(id);
-    }
+    public boolean delete(Long id) {
+        if (ingredientMap.containsKey(id)) {
+            ingredientMap.remove(id);
+            saveToFile();
+            return true;
+        }
+            return false;
+        }
 
     @Override
     public Map<Long, Ingredient> getAll() {
         return ingredientMap;
     }
+
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredientMap);
@@ -74,7 +84,7 @@ public class IngredientServiceImpl implements IngredientService {
     private void readFromFile() {
         try {
             String json = fileIngredientService.readFromFile();
-            new ObjectMapper().readValue(json, new TypeReference<HashMap<Long, Ingredient>>() {
+            ingredientMap = new ObjectMapper().readValue(json, new TypeReference<HashMap<Long, Ingredient>>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

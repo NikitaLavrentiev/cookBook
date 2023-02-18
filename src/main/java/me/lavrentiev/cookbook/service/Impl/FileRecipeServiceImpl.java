@@ -18,12 +18,8 @@ public class FileRecipeServiceImpl implements FileRecipeService {
     @Override
     public boolean saveToFile(String json) {
         try {
-            if (json != null && !json.isBlank() && !json.isEmpty()) {
                 deleteDataFile();
                 Files.writeString(Path.of(dataFilePath, dataFileName), json);
-            } else {
-                Files.writeString(Path.of(dataFilePath, dataFileName), json);
-            }
             return true;
         } catch (IOException e) {
             e.printStackTrace();

@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 @Service
 public class FileIngredientServiceImpl implements FileIngredientService {
-    @Value("${name.of.data.file.ingredient}")
+    @Value("${path.to.data.file.ingredient}")
     private String dataFilePath;
     @Value("${name.of.data.file.ingredient}")
     private String dataFileName;
@@ -17,12 +17,8 @@ public class FileIngredientServiceImpl implements FileIngredientService {
     @Override
     public boolean saveToFile(String json) {
         try {
-            if (json != null && !json.isBlank() && !json.isEmpty()) {
                 deleteDataFile();
                 Files.writeString(Path.of(dataFilePath, dataFileName), json);
-            } else {
-                Files.writeString(Path.of(dataFilePath, dataFileName), json);
-            }
             return true;
         } catch (IOException e) {
             e.printStackTrace();

@@ -23,8 +23,9 @@ public class RecipeController {
             summary = "Сохраняет рецепты, возможна ошибка 400"
     )
     @PostMapping
-    public ResponseEntity<Recipe> save(@RequestBody Recipe recipe) {
-        return ResponseEntity.ok(recipeService.save(recipe));
+    public ResponseEntity<Long> save(@RequestBody Recipe recipe) {
+        long id = recipeService.addRecipe(recipe);
+        return ResponseEntity.ok().body(id);
     }
 
     @Operation(
@@ -48,7 +49,10 @@ public class RecipeController {
     )
     @DeleteMapping("/{id}")
     public ResponseEntity<Recipe> delete(@PathVariable Long id) {
-        return ResponseEntity.ok(recipeService.delete(id));
+        if (recipeService.delete(id)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @Operation(
