@@ -4,6 +4,7 @@ import me.lavrentiev.cookbook.service.FileRecipeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +37,8 @@ public class FileRecipeServiceImpl implements FileRecipeService {
         }
     }
 
-    private boolean deleteDataFile() {
+
+    public boolean deleteDataFile() {
         try {
             Path path = Path.of(dataFilePath, dataFileName);
             Files.deleteIfExists(path);
@@ -47,4 +49,10 @@ public class FileRecipeServiceImpl implements FileRecipeService {
             return false;
         }
     }
+    @Override
+    public File getDataFile() {
+        return new File(dataFilePath + "/" + dataFileName);
+    }
+
 }
+
