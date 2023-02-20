@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.lavrentiev.cookbook.exeptions.ValidationException;
+import me.lavrentiev.cookbook.model.Ingredient;
 import me.lavrentiev.cookbook.model.Recipe;
 import me.lavrentiev.cookbook.service.FileRecipeService;
 import me.lavrentiev.cookbook.service.RecipeService;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.nio.file.Path;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -92,7 +93,29 @@ public class RecipeServiceImpl implements RecipeService {
             throw new RuntimeException(e);
         }
     }
+    @Override
+    public File recipesToTxt() throws IOException {
+        return fileRecipeService.saveToFile(recipesToString(), fileRecipeService.returnPath()).toFile();
+    }
 
+    private String recipesToString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        String dot = "\t• ";
+        for (Recipe recipe : recipeMap.values()) {
+            stringBuilder.append("\n").append(recipe.toString()).append("\n");
+            stringBuilder.append("\nИнгредиенты:\n");
+
+            for (Ingredient ingredient : recipe.getIngredients()) {
+                stringBuilder.append(dot).append(ingredient.toString()).append("\n");
+            }
+            stringBuilder.append("\n  Инструкция по приготовлению:");
+
+            for (String step : recipe.getSteps()) {
+                stringBuilder.append(dot).append(step).append("\n");
+            }
+        }
+        return stringBuilder.append("\n").toString();
+    }
 
 
 }

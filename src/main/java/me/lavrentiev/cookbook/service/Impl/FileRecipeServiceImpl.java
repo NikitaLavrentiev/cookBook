@@ -15,6 +15,8 @@ public class FileRecipeServiceImpl implements FileRecipeService {
     private String dataFilePath;
     @Value("${name.of.data.file.recipe}")
     private String dataFileName;
+    @Value("name.of.data.file.txt.recipe")
+    private String dataTxtFileName;
 
     @Override
     public boolean saveToFile(String json) {
@@ -49,6 +51,45 @@ public class FileRecipeServiceImpl implements FileRecipeService {
             return false;
         }
     }
+
+    @Override
+    public boolean cleanDataFile() {
+        try {
+            Path path = Path.of(dataFilePath, dataFileName);
+            Files.deleteIfExists(path);
+            Files.createFile(path);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public Path returnPath() {
+        Path path = Path.of(dataFilePath, dataTxtFileName);
+        try {
+            Files.deleteIfExists(path);
+            Files.createFile(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+
+
+    @Override
+        public Path saveToFile (String content, Path path) throws IOException {
+            createNewFile(path);
+            return Files.writeString(path, content);
+        }
+
+
+        private void createNewFile(Path path) throws IOException {
+            Files.deleteIfExists(path);
+            Files.createFile(path);
+        }
+
     @Override
     public File getDataFile() {
         return new File(dataFilePath + "/" + dataFileName);
