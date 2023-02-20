@@ -27,7 +27,7 @@ public class RecipeFilesController {
 
 
 
-    @GetMapping(value = "/export/")
+    @GetMapping(value = "/export")
     public ResponseEntity<InputStreamResource> downloadDataFile() throws FileNotFoundException {
        File file = recipeService.getDataFile();
 

@@ -23,7 +23,7 @@ public class IngredientFilesController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping(value = "/export/")
+    @GetMapping(value = "/export")
     public ResponseEntity<InputStreamResource> downloadDataFile() throws FileNotFoundException {
         File file = ingredientService.getDataFile();
 
